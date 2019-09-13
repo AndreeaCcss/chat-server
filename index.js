@@ -2,9 +2,11 @@ const express = require("express");
 // allows you to create a stream - an array of clients
 // then you can send a message to the stream and the message will be sent to all the clients
 const Sse = require("json-sse");
-const factory = require("./router");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+
+const factory = require("./router");
+const db = require("./db");
 
 const JSONparser = bodyParser.json();
 // quality by value - it makes a new copy when you would export it
