@@ -9,6 +9,12 @@ const Message = require("./model");
 function factory(stream) {
   const router = new Router();
 
+  async function update() {
+    const messages = await Message.findAll();
+    const data = JSON.stringify(messages);
+    stream.send(data);
+  }
+
   async function onStream(req, res) {
     const messages = await Message.findAll();
     const data = JSON.stringify(messages);
@@ -21,18 +27,20 @@ function factory(stream) {
 
   async function onMessage(req, res) {
     const { text } = req.body;
-    // messages.push(text);
     const message = await Message.create({ text });
-
-    const messages = await Message.findAll();
-    const data = JSON.stringify(messages);
-    // send data to all clients
-    stream.send(data);
-    // always return res.send()
+    await update();
+    // always return the res.send()
     return res.send(text);
   }
   router.get("/stream", onStream);
   router.post("/message", onMessage);
+
+  async function onDelete(req, res) {
+    const destroyed = await Message.destroy({ where: {}, truncate: true });
+    await update();
+    return res.send({ destroyed });
+  }
+  router.delete("/message", onDelete);
 
   return router;
 }
