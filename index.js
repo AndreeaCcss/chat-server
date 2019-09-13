@@ -6,7 +6,6 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 
 const factory = require("./router");
-const db = require("./db");
 
 const JSONparser = bodyParser.json();
 // quality by value - it makes a new copy when you would export it
