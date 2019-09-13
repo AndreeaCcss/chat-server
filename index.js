@@ -4,12 +4,17 @@ const express = require("express");
 const Sse = require("json-sse");
 const factory = require("./router");
 
+const bodyParser = require("body-parser");
+const JSONparser = bodyParser.json();
+
 // quality by value - it makes a new copy when you would export it
 // it would be a different stream if you export it
 // we need to use the same stream - the factory allows that
 const stream = new Sse();
 const app = express();
 const port = process.env.PORT || 4000;
+
+app.use(JSONparser);
 
 const router = factory(stream);
 app.use(router);

@@ -16,10 +16,21 @@ function factory(stream) {
     stream.updateInit(data);
     // console.log("data:", data);
     // add the client that sent the req to the stream
-    stream.init(req, res);
+    return stream.init(req, res);
   }
 
+  function onMessage(req, res) {
+    const { text } = req.body;
+    messages.push(text);
+    const data = JSON.stringify(messages);
+    // send data to all clients
+    stream.send(data);
+    // always return res.send()
+    return res.send(text);
+  }
   router.get("/stream", onStream);
+  router.post("/message", onMessage);
+
   return router;
 }
 module.exports = factory;
